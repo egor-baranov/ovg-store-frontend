@@ -16,15 +16,15 @@ import {useRouter} from "next/router";
 import {color} from "@mui/system";
 
 export const RowCard: React.FC<{
-    label: string, price: string, imageUrl: string, color: string, size: string, amount: number,
+    id: string, label: string, price: string, imageUrl: string, color: string, size: string, amount: number,
     onRemove: Function, onPlus: Function, onMinus: Function
 }> =
-    ({label, price, imageUrl, color, size, amount, onRemove, onPlus, onMinus}) => {
+    ({id, label, price, imageUrl, color, size, amount, onRemove, onPlus, onMinus}) => {
         const router = useRouter()
         const [count, setCount] = useState<number>(amount)
 
         function openProduct() {
-            router.push("/product")
+            router.push("/product/" + id)
         }
 
         function colorIdToLabel(colorId: string) {

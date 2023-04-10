@@ -6,8 +6,8 @@ import React, {ReactNode, useState} from "react"
 import colors from "tailwindcss/colors"
 import {useRouter} from "next/router";
 
-export const Card: React.FC<{ label: string, price: string, imageUrl: string, selectedByDefault: boolean, onUpdate: Function }> =
-    ({label, price, imageUrl, selectedByDefault, onUpdate}) => {
+export const Card: React.FC<{ id: string, label: string, price: string, imageUrl: string, selectedByDefault: boolean, onUpdate: Function }> =
+    ({id, label, price, imageUrl, selectedByDefault, onUpdate}) => {
 
         const [color, setColor] = useState<string>(colors.gray[100])
         const [favorite, setFavorite] = useState<boolean>(selectedByDefault)
@@ -23,7 +23,7 @@ export const Card: React.FC<{ label: string, price: string, imageUrl: string, se
         }
 
         function openProduct() {
-            router.push("/product")
+            router.push("/product/" + id)
         }
 
         function addToFavorite() {

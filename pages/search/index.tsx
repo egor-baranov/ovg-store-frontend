@@ -1,11 +1,6 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import type {NextPage} from "next"
-import Link from "next/link"
 import React from "react";
 import {MainLayout} from "../../components/Layout";
-import {Card} from "../../components/Card";
 import {SearchBar} from "../../components/SearchBar";
 
 const Search: NextPage = () => {

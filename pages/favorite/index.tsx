@@ -27,7 +27,7 @@ const Favorite: React.FC<{ count: number, updateFavorite: Function }> = ({count,
         <div className={clsx("grid gap-4", styles.grid)}>
             {
                 Array.from({length: count}).map((v) => (
-                    <Card key="${v}" label="Adidas x Pharrell Williams Basics Hoodie" price="7940" imageUrl=""
+                    <Card key="${v}" id={"0"} label="Adidas x Pharrell Williams Basics Hoodie" price="7940" imageUrl=""
                           selectedByDefault={true} onUpdate={updateFavorite}></Card>
                 ))
             }

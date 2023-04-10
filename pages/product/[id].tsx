@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import type {NextPage} from "next"
+import type {GetStaticPaths, NextPage} from "next"
 import Link from "next/link"
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {MainLayout} from "../../components/Layout";
@@ -13,7 +13,8 @@ import clsx from "clsx";
 import colors from "tailwindcss/colors"
 import html from './index.module.css'
 import {CartModel, CartModelSchema} from "../../models/Cart";
-import {Model, ModelSchema} from "../../models/ProductSchema";
+import {Model, ModelSchema, Product} from "../../models/ProductSchema";
+import {GetStaticPropsResult} from "next";
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
     return (
@@ -27,7 +28,7 @@ const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean 
     )
 }
 
-const ProductDetails: React.FC<{ addToCart: any, isMobile: boolean }> = ({addToCart, isMobile}) => {
+const ProductDetails: React.FC<{ product: Product, addToCart: any, isMobile: boolean }> = ({product, addToCart, isMobile}) => {
 
     const [size, setSize] = useState<string>("L")
     const [color, setColor] = useState<string>("black")
@@ -44,7 +45,7 @@ const ProductDetails: React.FC<{ addToCart: any, isMobile: boolean }> = ({addToC
 
     function buildModel(color: string, size: string) {
         return {
-            product: {id: "", label: "Adidas x Pharrell Williams Basics Hoodie", description: "", price: 7940},
+            product: {id: product.id, label: product.label, description: product.description, price: Number(product.price)},
             color: color,
             size: size,
             amount: 1
@@ -92,7 +93,7 @@ const ProductDetails: React.FC<{ addToCart: any, isMobile: boolean }> = ({addToC
                                 selected={color == "beige"}></SizeButton>
                 </div>
 
-                <h1 className="text-2xl mb-4 pt-8 pb-2 font-bold text-center">7490 р.</h1>
+                <h1 className="text-2xl mb-4 pt-8 pb-2 font-bold text-center">{product.price} р.</h1>
 
                 <button type="button"
                         onClick={() => addToCart(buildModel(color, size))}
@@ -109,7 +110,38 @@ const ProductDetails: React.FC<{ addToCart: any, isMobile: boolean }> = ({addToC
     )
 }
 
-const Home: NextPage = () => {
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
+
+export async function getStaticProps(context: { params: { id: string } }): Promise<GetStaticPropsResult<HomeProps>> {
+    const res = await fetch(
+        process.env.BACKEND_URL + '/product/' + context.params.id as string,
+        {
+            headers: {
+                Authorization: `Api-Key ${process.env.ACCESS_TOKEN}`
+            }
+        }
+    )
+    const product: Product = await res.json()
+
+    return {
+        props: {
+            product
+        },
+    }
+}
+
+interface HomeProps {
+    product: Product
+}
+
+// @ts-ignore
+const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
     const router = useRouter()
 
@@ -162,7 +194,7 @@ const Home: NextPage = () => {
 
     return (
         <MainLayout>
-            <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">Adidas x Pharrell Williams Basics Hoodie</h1>
+            <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">{props.product.label}</h1>
 
             <div className={isMobile ? "flex justify-center flex-col mb-16" : "flex justify-center flex-row mb-16"}>
 
@@ -209,7 +241,7 @@ const Home: NextPage = () => {
                 </div>
 
                 <div className={isMobile ? "w-full" : "w-1/2"}>
-                    <ProductDetails addToCart={addToCart} isMobile={isMobile}></ProductDetails>
+                    <ProductDetails product={props.product} addToCart={addToCart} isMobile={isMobile}></ProductDetails>
                 </div>
             </div>
 

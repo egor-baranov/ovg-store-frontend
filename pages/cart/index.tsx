@@ -8,6 +8,11 @@ import {Model, ModelSchema} from "../../models/ProductSchema";
 import {set, z} from "zod"
 import {YMaps, Map} from "@pbe/react-yandex-maps";
 
+function onYaPayLoad() {
+
+}
+
+
 const EmptyCart: React.FC<{ action: Function }> = ({action}) => {
     return (
         <div className="py-32 flex flex-col items-center justify-center">
@@ -37,7 +42,8 @@ const Cart: React.FC<{ items: Model[], onRemove: Function, onPlus: Function, onM
                 {
                     items.map((m, index) => (
                         <div key="$v" className="py-3">
-                            <RowCard label={m.product.label} price={String(m.product.price)} imageUrl=""
+                            <RowCard id={m.product.id}
+                                     label={m.product.label} price={String(m.product.price)} imageUrl=""
                                      size={m.size} color={m.color} amount={m.amount}
                                      onRemove={() => {
                                          onRemove(index);
@@ -61,7 +67,7 @@ const Cart: React.FC<{ items: Model[], onRemove: Function, onPlus: Function, onM
 
                 <YMaps>
                     <div>
-                        <Map defaultState={{ center: [55.75, 37.57], zoom: 9}} width=''/>
+                        <Map defaultState={{center: [55.75, 37.57], zoom: 9}} width=''/>
                     </div>
                 </YMaps>
 
@@ -144,13 +150,18 @@ const Home: NextPage = () => {
     }
 
     return (
+        <body>
         <MainLayout>
             <h1 className="w-full text-3xl mb-4 pt-8 font-bold">Корзина</h1>
 
             {count > 0 ?
                 <Cart items={cartModel.items} onRemove={onRemove} onPlus={onPlus} onMinus={onMinus}/> :
                 <EmptyCart action={() => router.push("/")}/>}
+
+
         </MainLayout>
+        <script src="https://pay.yandex.ru/sdk/v1/pay.js" onLoad={onYaPayLoad} async></script>
+        </body>
     )
 }
 
