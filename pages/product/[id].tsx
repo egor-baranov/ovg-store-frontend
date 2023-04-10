@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import type {GetStaticPaths, NextPage} from "next"
+import type {GetServerSidePropsResult, GetStaticPaths, NextPage} from "next"
 import Link from "next/link"
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {MainLayout} from "../../components/Layout";
@@ -110,7 +110,7 @@ const ProductDetails: React.FC<{ product: Product, addToCart: any, isMobile: boo
     )
 }
 
-export async function getServerSideProps(context: { params: { id: string } }): Promise<GetStaticPropsResult<HomeProps>> {
+export async function getServerSideProps(context: { params: { id: string } }): Promise<GetServerSidePropsResult<HomeProps>> {
     const res = await fetch(
         process.env.BACKEND_URL + '/product/' + context.params.id as string,
         {
