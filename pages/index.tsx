@@ -26,7 +26,7 @@ type CategoriesResponse = {
     categories: Map<string, Product[]>
 }
 
-export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
+export async function getServerSideProps(): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
         process.env.BACKEND_URL + '/category/all',
         {

@@ -110,15 +110,7 @@ const ProductDetails: React.FC<{ product: Product, addToCart: any, isMobile: boo
     )
 }
 
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-
-    return {
-        paths: [], //indicates that no page needs be created at build time
-        fallback: 'blocking' //indicates the type of fallback
-    }
-}
-
-export async function getStaticProps(context: { params: { id: string } }): Promise<GetStaticPropsResult<HomeProps>> {
+export async function getServerSideProps(context: { params: { id: string } }): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
         process.env.BACKEND_URL + '/product/' + context.params.id as string,
         {
