@@ -1,16 +1,9 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import type {GetServerSidePropsResult, GetStaticPaths, NextPage} from "next"
-import Link from "next/link"
+import type {GetStaticPaths, NextPage} from "next"
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {MainLayout} from "../../components/Layout";
-import {Card} from "../../components/Card";
-import {SearchBar} from "../../components/SearchBar";
 import {Favorite, FavoriteBorder, FavoriteOutlined, ShoppingBagOutlined} from "@mui/icons-material";
 import {useRouter} from "next/router";
 import clsx from "clsx";
-import colors from "tailwindcss/colors"
 import html from './index.module.css'
 import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema, Product} from "../../models/ProductSchema";
@@ -110,7 +103,15 @@ const ProductDetails: React.FC<{ product: Product, addToCart: any, isMobile: boo
     )
 }
 
-export async function getServerSideProps(context: { params: { id: string } }): Promise<GetServerSidePropsResult<HomeProps>> {
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
+
+export async function getStaticProps(context: { params: { id: string } }): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
         process.env.BACKEND_URL + '/product/' + context.params.id as string,
         {
