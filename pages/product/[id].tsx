@@ -123,10 +123,11 @@ export async function getStaticProps(context: { params: { id: string } }): Promi
         process.env.BACKEND_URL + '/product/' + context.params.id as string,
         {
             headers: {
-                Authorization: `Api-Key ${process.env.ACCESS_TOKEN}`
+                Authorization: `${process.env.ACCESS_TOKEN}`
             }
         }
     )
+
     const product: Product = await res.json()
 
     return {
