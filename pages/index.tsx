@@ -31,7 +31,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>>
         process.env.BACKEND_URL + '/category/all',
         {
             headers: {
-                Authorization: `Api-Key ${process.env.ACCESS_TOKEN}`
+                Authorization: `${process.env.ACCESS_TOKEN}`
             }
         }
     )
