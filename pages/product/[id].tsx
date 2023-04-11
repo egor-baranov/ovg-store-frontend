@@ -1,4 +1,4 @@
-import type {GetStaticPaths, NextPage} from "next"
+import type {GetServerSidePropsResult, GetStaticPaths, NextPage} from "next"
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {MainLayout} from "../../components/Layout";
 import {Favorite, FavoriteBorder, FavoriteOutlined, ShoppingBagOutlined} from "@mui/icons-material";
@@ -103,17 +103,15 @@ const ProductDetails: React.FC<{ product: Product, addToCart: any, isMobile: boo
     )
 }
 
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
 
-    return {
-        paths: [], //indicates that no page needs be created at build time
-        fallback: 'blocking' //indicates the type of fallback
-    }
-}
+export async function getServerSideProps(context: { params: { id: string }, res: any }): Promise<GetServerSidePropsResult<HomeProps>> {
+    context.res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+    )
 
-export async function getStaticProps(context: { params: { id: string } }): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
-        process.env.BACKEND_URL + '/product/' + context.params.id as string,
+        process.env.TEST_BACKEND_URL + '/product/' + context.params.id as string,
         {
             headers: {
                 Authorization: `${process.env.ACCESS_TOKEN}`
