@@ -110,14 +110,14 @@ export async function getServerSideProps(context: { params: { id: string }, res:
         'public, s-maxage=10, stale-while-revalidate=59'
     )
 
-    const res = await fetch(
-        process.env.BACKEND_URL + '/product/' + context.params.id as string,
-        {
-            headers: {
-                Authorization: `${process.env.ACCESS_TOKEN}`
-            }
-        }
-    )
+    // const res = await fetch(
+    //     process.env.BACKEND_URL + '/product/' + context.params.id as string,
+    //     {
+    //         headers: {
+    //             Authorization: `${process.env.ACCESS_TOKEN}`
+    //         }
+    //     }
+    // )
 
     const product: ProductResponse = {
         id: context.params.id,
