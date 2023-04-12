@@ -1,8 +1,5 @@
 import {Favorite, FavoriteBorder, Remove, Search, ShoppingBagOutlined, ShoppingCart} from "@mui/icons-material"
-import clsx from "clsx"
-import Link from "next/link"
-import Image from "next/image"
-import React, {ReactNode, useState} from "react"
+import React, {useState} from "react"
 import colors from "tailwindcss/colors"
 import {useRouter} from "next/router";
 

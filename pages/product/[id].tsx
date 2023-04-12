@@ -8,6 +8,7 @@ import html from './index.module.css'
 import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema, Product} from "../../models/ProductSchema";
 import {GetStaticPropsResult} from "next";
+import {CategoriesResponse} from "../index";
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
     return (
@@ -105,21 +106,21 @@ const ProductDetails: React.FC<{ product: Product, addToCart: any, isMobile: boo
 
 
 export async function getServerSideProps(context: { params: { id: string }, res: any }): Promise<GetServerSidePropsResult<HomeProps>> {
-    context.res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-    )
-
     const res = await fetch(
-        process.env.BACKEND_URL + '/product/' + context.params.id as string,
+        process.env.BACKEND_URL + '/category/all',
         {
             headers: {
                 Authorization: `${process.env.ACCESS_TOKEN}`
             }
         }
     )
+    const categoriesResponse: CategoriesResponse = await res.json()
+    const categories = categoriesResponse.categories
 
-    const product: Product = await res.json()
+
+    const product: Product = Array.from(new Map<string, Product[]>(
+        Object.entries(categories)
+    ).values())[0][0]
 
     return {
         props: {

@@ -12,7 +12,7 @@ import {loadProducts} from '../lib/load-products'
 import {useSession} from 'next-auth/react'
 import {map} from "yandex-maps";
 
-type Product = {
+export type Product = {
     id: string
     label: string
     description: string
@@ -22,7 +22,7 @@ type Product = {
     images: string[]
 }
 
-type CategoriesResponse = {
+export type CategoriesResponse = {
     categories: Map<string, Product[]>
 }
 
