@@ -104,44 +104,52 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
 }
 
 
-export async function getServerSideProps(context: { params: { id: string }, res: any }): Promise<GetServerSidePropsResult<HomeProps>> {
-    context.res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-    )
-
-    // const res = await fetch(
-    //     process.env.BACKEND_URL + '/product/' + context.params.id as string,
-    //     {
-    //         headers: {
-    //             Authorization: `${process.env.ACCESS_TOKEN}`
-    //         }
-    //     }
-    // )
-
-    const product: ProductResponse = {
-        id: context.params.id,
-        label: context.params.id,
-        description: "",
-        price: "6990",
-        sizes: [],
-        colors: [],
-        images: []
-    }
-
-    return {
-        props: {
-            product
-        },
-    }
-}
+// export async function getStaticProps(context: { params: { id: string }, res: any }): Promise<GetServerSidePropsResult<HomeProps>> {
+//
+//     // const res = await fetch(
+//     //     process.env.BACKEND_URL + '/product/' + context.params.id as string,
+//     //     {
+//     //         headers: {
+//     //             Authorization: `${process.env.ACCESS_TOKEN}`
+//     //         }
+//     //     }
+//     // )
+//
+//     const product: ProductResponse = {
+//         id: context.params.id,
+//         label: context.params.id,
+//         description: "",
+//         price: "6990",
+//         sizes: [],
+//         colors: [],
+//         images: []
+//     }
+//
+//     return {
+//         props: {
+//             product
+//         },
+//     }
+// }
 
 interface HomeProps {
     product: ProductResponse
 }
 
 // @ts-ignore
-const Home: React.FC<HomeProps> = (props: HomeProps) => {
+const Home: React.FC<HomeProps> = () => {
+
+    const props = {
+        product: {
+            id: "id",
+            label: "id",
+            description: "",
+            price: "6990",
+            sizes: [],
+            colors: [],
+            images: []
+        }
+    }
 
     const router = useRouter()
 
