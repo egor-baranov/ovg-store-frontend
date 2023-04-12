@@ -6,8 +6,7 @@ import {useRouter} from "next/router";
 import clsx from "clsx";
 import html from './index.module.css'
 import {CartModel, CartModelSchema} from "../../models/Cart";
-import {Model, ModelSchema, Product} from "../../models/ProductSchema";
-import {GetStaticPropsResult} from "next";
+import {Model, ModelSchema} from "../../models/ProductSchema";
 import {ProductResponse} from "../index";
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
@@ -120,7 +119,15 @@ export async function getServerSideProps(context: { params: { id: string }, res:
         }
     )
 
-    const product: ProductResponse = await res.json()
+    const product: ProductResponse = {
+        id: context.params.id,
+        label: context.params.id,
+        description: "",
+        price: "6990",
+        sizes: [],
+        colors: [],
+        images: []
+    }
 
     return {
         props: {
