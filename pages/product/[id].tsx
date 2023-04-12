@@ -8,7 +8,7 @@ import html from './index.module.css'
 import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema} from "../../models/ProductSchema";
 import {ProductResponse} from "../index";
-import type { GetServerSideProps } from 'next'
+import type {GetServerSideProps} from 'next'
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
     return (
@@ -142,16 +142,17 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
 //     }
 // }
 
-export const getServerSideProps: GetServerSideProps = async() => {
-    const product: ProductResponse = {
-        id: "id",
-        label: "id",
-        description: "",
-        price: "6990",
-        sizes: [],
-        colors: [],
-        images: []
-    }
+export const getServerSideProps: GetServerSideProps = async () => {
+    const res = await fetch(
+        process.env.BACKEND_URL + '/product/' + "id" as string,
+        {
+            headers: {
+                Authorization: `${process.env.ACCESS_TOKEN}`
+            }
+        }
+    )
+
+    const product: ProductResponse = await res.json()
 
     return {
         props: {
