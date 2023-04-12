@@ -12,7 +12,7 @@ import {loadProducts} from '../lib/load-products'
 import {useSession} from 'next-auth/react'
 import {map} from "yandex-maps";
 
-export type Product = {
+export type ProductResponse = {
     id: string
     label: string
     description: string
@@ -23,7 +23,7 @@ export type Product = {
 }
 
 export type CategoriesResponse = {
-    categories: Map<string, Product[]>
+    categories: Map<string, ProductResponse[]>
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
@@ -46,7 +46,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>>
 }
 
 interface HomeProps {
-    categories: Map<string, Product[]>
+    categories: Map<string, ProductResponse[]>
 }
 
 // @ts-ignore
@@ -63,7 +63,7 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
     return (
         <MainLayout>
             {Array.from(
-                new Map<string, Product[]>(
+                new Map<string, ProductResponse[]>(
                     Object.entries(props!!.categories)
                 ).entries()
             ).map((v) => (
