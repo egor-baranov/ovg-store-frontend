@@ -21,7 +21,11 @@ const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean 
     )
 }
 
-const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMobile: boolean }> = ({product, addToCart, isMobile}) => {
+const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMobile: boolean }> = ({
+                                                                                                       product,
+                                                                                                       addToCart,
+                                                                                                       isMobile
+                                                                                                   }) => {
 
     const [size, setSize] = useState<string>("L")
     const [color, setColor] = useState<string>("black")
@@ -38,7 +42,12 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
 
     function buildModel(color: string, size: string) {
         return {
-            product: {id: product.id, label: product.label, description: product.description, price: Number(product.price)},
+            product: {
+                id: product.id,
+                label: product.label,
+                description: product.description,
+                price: Number(product.price)
+            },
             color: color,
             size: size,
             amount: 1
@@ -132,24 +141,31 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
 //     }
 // }
 
+export async function getServerSideProps(context: any) {
+
+    const product: ProductResponse = {
+        id: context.params.id,
+        label: context.params.id,
+        description: "",
+        price: "6990",
+        sizes: [],
+        colors: [],
+        images: []
+    }
+
+    return {
+        props: {
+            product
+        },
+    }
+}
+
 interface HomeProps {
     product: ProductResponse
 }
 
 // @ts-ignore
-const Home: React.FC<HomeProps> = () => {
-
-    const props = {
-        product: {
-            id: "id",
-            label: "id",
-            description: "",
-            price: "6990",
-            sizes: [],
-            colors: [],
-            images: []
-        }
-    }
+const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
     const router = useRouter()
 
