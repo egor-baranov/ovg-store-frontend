@@ -35,6 +35,11 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>>
             }
         }
     )
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch data: ' + res.status);
+    }
+
     const categoriesResponse: CategoriesResponse = await res.json()
     const categories = categoriesResponse.categories
 

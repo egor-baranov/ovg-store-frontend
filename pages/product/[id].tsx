@@ -9,6 +9,7 @@ import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema} from "../../models/ProductSchema";
 import {ProductResponse} from "../index";
 import type {GetServerSideProps} from 'next'
+import {GetStaticPropsResult} from "next";
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
     return (
@@ -23,10 +24,10 @@ const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean 
 }
 
 const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMobile: boolean }> = ({
-                                                                                                       product,
-                                                                                                       addToCart,
-                                                                                                       isMobile
-                                                                                                   }) => {
+   product,
+   addToCart,
+   isMobile
+}) => {
 
     const [size, setSize] = useState<string>("L")
     const [color, setColor] = useState<string>("black")
@@ -113,36 +114,7 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
     )
 }
 
-
-// export async function getStaticProps(context: { params: { id: string }, res: any }): Promise<GetServerSidePropsResult<HomeProps>> {
-//
-//     // const res = await fetch(
-//     //     process.env.BACKEND_URL + '/product/' + context.params.id as string,
-//     //     {
-//     //         headers: {
-//     //             Authorization: `${process.env.ACCESS_TOKEN}`
-//     //         }
-//     //     }
-//     // )
-//
-//     const product: ProductResponse = {
-//         id: context.params.id,
-//         label: context.params.id,
-//         description: "",
-//         price: "6990",
-//         sizes: [],
-//         colors: [],
-//         images: []
-//     }
-//
-//     return {
-//         props: {
-//             product
-//         },
-//     }
-// }
-
-export const getServerSideProps: GetServerSideProps = async () => {
+export async function getServerSideProps(): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
         process.env.BACKEND_URL + '/product/' + "id" as string,
         {
@@ -243,7 +215,7 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
                     <div className="snap-mandatory snap-x flex overflow-x-auto md:overflow-scroll">
                         {
-                            Array.from({length: 10}).map((_, v) => (
+                            Array.from({length: props.product.images.length}).map((_, v) => (
                                 <button key={String(v) + "preview"}
                                         className={v === imageIndex ?
                                             "flex-shrink-0 snap-center p-2 mx-1 my-2 rounded-lg bg-gray-200 hover:bg-gray-200"
