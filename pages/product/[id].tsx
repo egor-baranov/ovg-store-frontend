@@ -171,7 +171,7 @@ function Page() {
     }, []);
 
     const isMobile = windowSize.innerWidth <= 800
-    const [product, setProduct] = useState(null);
+    const [product, setProduct] = useState<ProductResponse | null>(null);
 
     useEffect(() => {
         async function fetchUsers() {
