@@ -188,7 +188,18 @@ function Page({data}: InferGetServerSidePropsType<typeof getServerSideProps>) {
         };
     }, []);
 
+    const [isLoading, setIsLoading] = useState(true)
+    useEffect(() => {
+        router.isReady && setIsLoading(false)
+    }, [router]);
+
     const isMobile = windowSize.innerWidth <= 800
+
+    if (isLoading) {
+        return (<MainLayout>
+            <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">Loading...</h1>
+        </MainLayout>)
+    }
 
     return (
         <MainLayout>
