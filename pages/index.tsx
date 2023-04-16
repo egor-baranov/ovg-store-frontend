@@ -10,7 +10,7 @@ import {useRouter} from "next/router";
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
-        `${process.env.BACKEND_URL}/category/all`,
+        `${process.env.NEXT_PUBLIC_API_ROOT}/category/all`,
         {
             headers: {
                 Authorization: `${process.env.ACCESS_TOKEN}`
