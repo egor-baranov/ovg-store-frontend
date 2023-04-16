@@ -15,6 +15,7 @@ import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema} from "../../models/ProductSchema";
 import {GetStaticPropsResult} from "next";
 import {ProductResponse} from "../../models/response/ProductResponse";
+import useSWR, { Fetcher } from 'swr';
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
     return (
@@ -119,26 +120,7 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
     )
 }
 
-export const getServerSideProps: GetServerSideProps<{ data: ProductResponse }> = async (context) => {
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ROOT}/product/id`,
-        {
-            headers: {
-                Authorization: `${process.env.ACCESS_TOKEN}`
-            }
-        }
-    )
-
-    const data: ProductResponse = await res.json()
-
-    return {
-        props: {
-            data
-        },
-    }
-}
-
-function Page({data}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Page() {
     // will resolve data to type Data
 
     const router = useRouter()
@@ -188,14 +170,21 @@ function Page({data}: InferGetServerSidePropsType<typeof getServerSideProps>) {
         };
     }, []);
 
-    const [isLoading, setIsLoading] = useState(true)
-    useEffect(() => {
-        router.isReady && setIsLoading(false)
-    }, [router]);
-
     const isMobile = windowSize.innerWidth <= 800
+    const [product, setProduct] = useState(null);
 
-    if (isLoading) {
+    useEffect(() => {
+        async function fetchUsers() {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ROOT}/product/id`);
+            setProduct(await response.json())
+        }
+
+        fetchUsers();
+    }, [])
+
+
+
+    if (!product) {
         return (<MainLayout>
             <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">Loading...</h1>
         </MainLayout>)
@@ -203,7 +192,7 @@ function Page({data}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
         <MainLayout>
-            <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">{data.label}</h1>
+            <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">{product.label}</h1>
 
             <div className={isMobile ? "flex justify-center flex-col mb-16" : "flex justify-center flex-row mb-16"}>
 
@@ -227,7 +216,7 @@ function Page({data}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
                     <div className="snap-mandatory snap-x flex overflow-x-auto md:overflow-scroll">
                         {
-                            Array.from({length: data.images.length}).map((_, v) => (
+                            Array.from({length: product.images.length}).map((_, v) => (
                                 <button key={String(v) + "preview"}
                                         className={v === imageIndex ?
                                             "flex-shrink-0 snap-center p-2 mx-1 my-2 rounded-lg bg-gray-200 hover:bg-gray-200"
@@ -250,7 +239,7 @@ function Page({data}: InferGetServerSidePropsType<typeof getServerSideProps>) {
                 </div>
 
                 <div className={isMobile ? "w-full" : "w-1/2"}>
-                    <ProductDetails product={data} addToCart={addToCart} isMobile={isMobile}></ProductDetails>
+                    <ProductDetails product={product} addToCart={addToCart} isMobile={isMobile}></ProductDetails>
                 </div>
             </div>
 
