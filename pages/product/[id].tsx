@@ -29,10 +29,10 @@ const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean 
 }
 
 const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMobile: boolean }> = ({
-   product,
-   addToCart,
-   isMobile
-}) => {
+                                                                                                       product,
+                                                                                                       addToCart,
+                                                                                                       isMobile
+                                                                                                   }) => {
 
     const [size, setSize] = useState<string>("L")
     const [color, setColor] = useState<string>("black")
@@ -120,16 +120,16 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
 }
 
 export const getServerSideProps: GetServerSideProps<{ data: ProductResponse }> = async (context) => {
-    const res = await fetch(
-        process.env.BACKEND_URL + '/product/' + "id" as string,
-        {
-            headers: {
-                Authorization: `${process.env.ACCESS_TOKEN}`
-            }
-        }
-    )
+    // const res = await fetch(
+    //     `${process.env.BACKEND_URL}/product/id`,
+    //     {
+    //         headers: {
+    //             Authorization: `${process.env.ACCESS_TOKEN}`
+    //         }
+    //     }
+    // )
 
-    const data: ProductResponse = await res.json()
+    const data: ProductResponse = {id: "", label: "", description: "", price: "", sizes: [], colors: [], images: []}
 
     return {
         props: {
@@ -138,11 +138,7 @@ export const getServerSideProps: GetServerSideProps<{ data: ProductResponse }> =
     }
 }
 
-interface HomeProps {
-    product: ProductResponse
-}
-
-function Page({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function Page({data}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     // will resolve data to type Data
 
     const router = useRouter()

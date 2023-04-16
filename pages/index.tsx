@@ -10,7 +10,7 @@ import {useRouter} from "next/router";
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
-        process.env.BACKEND_URL + '/category/all',
+        `${process.env.BACKEND_URL}/category/all`,
         {
             headers: {
                 Authorization: `${process.env.ACCESS_TOKEN}`
@@ -21,6 +21,8 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>>
     if (!res.ok) {
         throw new Error('Failed to fetch data: ' + res.status);
     }
+
+
 
     const categoriesResponse: CategoriesResponse = await res.json()
     const categories = categoriesResponse.categories
