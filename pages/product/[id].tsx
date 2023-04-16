@@ -1,4 +1,10 @@
-import type {GetServerSidePropsResult, GetStaticPaths, NextPage} from "next"
+import type {
+    GetServerSideProps,
+    GetServerSidePropsResult,
+    GetStaticPaths,
+    InferGetServerSidePropsType,
+    NextPage
+} from "next"
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {MainLayout} from "../../components/Layout";
 import {Favorite, FavoriteBorder, FavoriteOutlined, ShoppingBagOutlined} from "@mui/icons-material";
@@ -7,9 +13,8 @@ import clsx from "clsx";
 import html from './index.module.css'
 import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema} from "../../models/ProductSchema";
-import {ProductResponse} from "../index";
-import type {GetServerSideProps} from 'next'
 import {GetStaticPropsResult} from "next";
+import {ProductResponse} from "../../models/response/ProductResponse";
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
     return (
@@ -114,7 +119,7 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
     )
 }
 
-export async function getServerSideProps(): Promise<GetStaticPropsResult<HomeProps>> {
+export const getServerSideProps: GetServerSideProps<{ data: ProductResponse }> = async (context) => {
     const res = await fetch(
         process.env.BACKEND_URL + '/product/' + "id" as string,
         {
@@ -124,11 +129,11 @@ export async function getServerSideProps(): Promise<GetStaticPropsResult<HomePro
         }
     )
 
-    const product: ProductResponse = await res.json()
+    const data: ProductResponse = await res.json()
 
     return {
         props: {
-            product
+            data
         },
     }
 }
@@ -137,8 +142,8 @@ interface HomeProps {
     product: ProductResponse
 }
 
-// @ts-ignore
-const Home: React.FC<HomeProps> = (props: HomeProps) => {
+function Page({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    // will resolve data to type Data
 
     const router = useRouter()
 
@@ -191,7 +196,7 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
     return (
         <MainLayout>
-            <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">{props.product.label}</h1>
+            <h1 className="text-3xl mb-4 pt-8 pb-4 font-bold">{data.label}</h1>
 
             <div className={isMobile ? "flex justify-center flex-col mb-16" : "flex justify-center flex-row mb-16"}>
 
@@ -215,7 +220,7 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
                     <div className="snap-mandatory snap-x flex overflow-x-auto md:overflow-scroll">
                         {
-                            Array.from({length: props.product.images.length}).map((_, v) => (
+                            Array.from({length: data.images.length}).map((_, v) => (
                                 <button key={String(v) + "preview"}
                                         className={v === imageIndex ?
                                             "flex-shrink-0 snap-center p-2 mx-1 my-2 rounded-lg bg-gray-200 hover:bg-gray-200"
@@ -238,7 +243,7 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
                 </div>
 
                 <div className={isMobile ? "w-full" : "w-1/2"}>
-                    <ProductDetails product={props.product} addToCart={addToCart} isMobile={isMobile}></ProductDetails>
+                    <ProductDetails product={data} addToCart={addToCart} isMobile={isMobile}></ProductDetails>
                 </div>
             </div>
 
@@ -246,4 +251,4 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
     )
 }
 
-export default Home
+export default Page

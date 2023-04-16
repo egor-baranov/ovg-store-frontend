@@ -5,6 +5,9 @@ import {MainLayout} from "../../components/Layout";
 import {Card} from "../../components/Card";
 import clsx from "clsx";
 import {useRouter} from "next/router";
+// @ts-ignore
+import {ProductResponse} from "../../models/response/ProductResponse";
+
 
 const EmptyFavorite: React.FC<{ action: Function }> = ({action}) => {
     return (
@@ -27,8 +30,12 @@ const Favorite: React.FC<{ count: number, updateFavorite: Function }> = ({count,
         <div className={clsx("grid gap-4", styles.grid)}>
             {
                 Array.from({length: count}).map((v) => (
-                    <Card key="${v}" id={"0"} label="Adidas x Pharrell Williams Basics Hoodie" price="7940" imageUrl=""
-                          selectedByDefault={true} onUpdate={updateFavorite}></Card>
+                    <Card key="${v}"
+                          product={{id: "", label: "", description: "", price: "", sizes: [], colors: [], images: []}}
+                          selectedByDefault={true}
+                          onUpdate={updateFavorite}
+                          onPress={() => {}}
+                    />
                 ))
             }
         </div>

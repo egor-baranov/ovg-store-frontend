@@ -11,20 +11,9 @@ import useSWR from 'swr'
 import {loadProducts} from '../lib/load-products'
 import {useSession} from 'next-auth/react'
 import {map} from "yandex-maps";
-
-export type ProductResponse = {
-    id: string
-    label: string
-    description: string
-    price: string
-    sizes: string[]
-    colors: string[]
-    images: string[]
-}
-
-export type CategoriesResponse = {
-    categories: Map<string, ProductResponse[]>
-}
+import {ProductResponse} from "../models/response/ProductResponse";
+import {CategoriesResponse} from "../models/response/CategoriesResponse";
+import {useRouter} from "next/router";
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
     const res = await fetch(
@@ -57,9 +46,36 @@ interface HomeProps {
 // @ts-ignore
 const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
+    const router = useRouter()
+
+    function openProduct(product: ProductResponse) {
+        fetch('/product/' + product.id, {
+            method: 'GET',
+            headers: {
+                Authorization: `${process.env.ACCESS_TOKEN}`
+            }
+        }).then((res) => {
+            if (res.ok) {
+                router.push({
+                    pathname: '/product/[id]',
+                    query: {id: product.id}
+                })
+            } else {
+                throw new Error(res.statusText + " for " + product.id)
+            }
+        })
+
+    }
+
     function addToFavorite() {
 
     }
+
+    useEffect(() => {
+            router.prefetch('/product/id')
+        },
+        [router]
+    )
 
     if (props.categories === undefined) {
         return
@@ -80,11 +96,11 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
                     <div className={clsx("grid gap-4", styles.grid)}>
                         {Array.from(v[1]).map((item) => (
                             <Card key={item.id}
-                                  id={item.id}
-                                  label={item.label}
-                                  price={item.price}
-                                  imageUrl={""}
-                                  selectedByDefault={false} onUpdate={addToFavorite}></Card>
+                                  product={item}
+                                  selectedByDefault={false}
+                                  onUpdate={addToFavorite}
+                                  onPress={() => openProduct(item)}
+                            />
                         ))}
                     </div>
                 </div>

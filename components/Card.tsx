@@ -2,14 +2,14 @@ import {Favorite, FavoriteBorder, Remove, Search, ShoppingBagOutlined, ShoppingC
 import React, {useState} from "react"
 import colors from "tailwindcss/colors"
 import {useRouter} from "next/router";
+import {ProductResponse} from "../models/response/ProductResponse";
 
-export const Card: React.FC<{ id: string, label: string, price: string, imageUrl: string, selectedByDefault: boolean, onUpdate: Function }> =
-    ({id, label, price, imageUrl, selectedByDefault, onUpdate}) => {
+
+export const Card: React.FC<{ product: ProductResponse, selectedByDefault: boolean, onUpdate: Function, onPress: Function }> =
+    ({product, selectedByDefault, onUpdate, onPress}) => {
 
         const [color, setColor] = useState<string>(colors.gray[100])
         const [favorite, setFavorite] = useState<boolean>(selectedByDefault)
-
-        const router = useRouter()
 
         function onMouseEnter() {
             setColor('black')
@@ -17,10 +17,6 @@ export const Card: React.FC<{ id: string, label: string, price: string, imageUrl
 
         function onMouseLeave() {
             setColor(colors.gray[100])
-        }
-
-        function openProduct() {
-            router.push("/product/" + id)
         }
 
         function addToFavorite() {
@@ -45,15 +41,15 @@ export const Card: React.FC<{ id: string, label: string, price: string, imageUrl
             >
                 <a href="#">
                     <img className="rounded-t-lg" src="https://storage.yandexcloud.net/ovg-store/img-2.png" width='300px' height='300px'
-                           onMouseDown={openProduct}/>
+                           onMouseDown={() => onPress()}/>
                 </a>
-                <div className="px-4" onMouseDown={openProduct}>
+                <div className="px-4" onMouseDown={() => onPress()}>
                     <p className="mb-3 text-bold text-gray-900 dark:text-gray-900 text-center">
-                        {label}
+                        {product.label}
                     </p>
                     <a href="#">
                         <h5 className=" mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
-                            {price} р.
+                            {product.price} р.
                         </h5>
                     </a>
                 </div>
