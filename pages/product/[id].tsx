@@ -120,16 +120,16 @@ const ProductDetails: React.FC<{ product: ProductResponse, addToCart: any, isMob
 }
 
 export const getServerSideProps: GetServerSideProps<{ data: ProductResponse }> = async (context) => {
-    // const res = await fetch(
-    //     `${process.env.BACKEND_URL}/product/id`,
-    //     {
-    //         headers: {
-    //             Authorization: `${process.env.ACCESS_TOKEN}`
-    //         }
-    //     }
-    // )
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ROOT}/product/id`,
+        {
+            headers: {
+                Authorization: `${process.env.ACCESS_TOKEN}`
+            }
+        }
+    )
 
-    const data: ProductResponse = {id: "", label: "", description: "", price: "", sizes: [], colors: [], images: []}
+    const data: ProductResponse = await res.json()
 
     return {
         props: {
