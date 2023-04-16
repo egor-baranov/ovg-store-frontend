@@ -150,7 +150,6 @@ const Home: NextPage = () => {
     }
 
     return (
-        <body>
         <MainLayout>
             <h1 className="w-full text-3xl mb-4 pt-8 font-bold">Корзина</h1>
 
@@ -160,8 +159,6 @@ const Home: NextPage = () => {
 
 
         </MainLayout>
-        <script src="https://pay.yandex.ru/sdk/v1/pay.js" onLoad={onYaPayLoad} async></script>
-        </body>
     )
 }
 

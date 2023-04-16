@@ -203,7 +203,7 @@ function Page() {
                     <div ref={imageCarouselRefContainer}
                          className={clsx("snap-mandatory snap-x flex overflow-x-auto md:overflow-scroll", html)}>
                         {
-                            Array.from({length: 10}).map((v) => (
+                            Array.from({length: product.images.length}).map((v) => (
                                 <div key={String(v) + "image"} className="flex-shrink-0 snap-center p-8">
                                     <img className="rounded-t-lg"
                                          src="https://storage.yandexcloud.net/ovg-store/img-2.png"
