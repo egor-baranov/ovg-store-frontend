@@ -3,14 +3,7 @@ import type {GetStaticProps, GetStaticPropsResult, InferGetStaticPropsType, Next
 import {MainLayout} from "../components/Layout"
 import {Card} from "../components/Card";
 import clsx from "clsx";
-import {Footer} from "../components/Footer";
 import React, {ReactNode, useEffect, useState} from "react";
-import {func} from "prop-types";
-import {CartModelSchema} from "../models/Cart";
-import useSWR from 'swr'
-import {loadProducts} from '../lib/load-products'
-import {useSession} from 'next-auth/react'
-import {map} from "yandex-maps";
 import {ProductResponse} from "../models/response/ProductResponse";
 import {CategoriesResponse} from "../models/response/CategoriesResponse";
 import {useRouter} from "next/router";
@@ -48,23 +41,8 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
     const router = useRouter()
 
-    function openProduct(product: ProductResponse) {
-        fetch('/product/' + product.id, {
-            method: 'GET',
-            headers: {
-                Authorization: `${process.env.ACCESS_TOKEN}`
-            }
-        }).then((res) => {
-            if (res.ok) {
-                router.push({
-                    pathname: '/product/[id]',
-                    query: {id: product.id}
-                })
-            } else {
-                throw new Error(res.statusText + " for " + product.id)
-            }
-        })
-
+    async function openProduct(product: ProductResponse) {
+        await router.push('/product/' + product.id)
     }
 
     function addToFavorite() {
