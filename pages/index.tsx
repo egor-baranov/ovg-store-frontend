@@ -21,6 +21,7 @@ const Home: React.FC = () => {
     }
 
     const [categories, setCategories] = useState<Map<string, ProductResponse[]> | null>(null);
+    const [titleIds, setTitleIds] = useState<Map<string, string> | null>(null);
 
     useEffect(() => {
         async function fetchCategories() {
@@ -30,6 +31,9 @@ const Home: React.FC = () => {
 
             const categoriesResponse: CategoriesResponse = await response.json()
             setCategories(categoriesResponse.categories)
+            setTitleIds(new Map<string, string>(
+                Object.entries(categoriesResponse.titleIds)
+            ))
         }
 
         fetchCategories();
@@ -49,7 +53,7 @@ const Home: React.FC = () => {
                 ).entries()
             ).map((v) => (
                 <div key={"title" + v[0]}>
-                    <h1 id={"label" + v[0]} className="text-3xl mb-4 pt-16 font-bold">{
+                    <h1 id={titleIds!!.get(v[0])} className="text-3xl mb-4 pt-16 font-bold">{
                         v[0]
                     }</h1>
 

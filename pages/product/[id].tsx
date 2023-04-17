@@ -177,7 +177,8 @@ function Page() {
 
     useEffect(() => {
         async function fetchProduct() {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ROOT}/product/id`);
+            const { id } = router.query
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ROOT}/product/` + id);
             setProduct(await response.json())
         }
 
