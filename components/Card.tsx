@@ -48,7 +48,7 @@ export const Card: React.FC<{ product: ProductResponse, selectedByDefault: boole
                         {product.label}
                     </p>
                     <a href="#">
-                        <h5 className=" mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
+                        <h5 className=" mb-2 text-xl text-gray-900 font-bold tracking-tight text-gray-900 dark:text-white text-center">
                             {product.price} р.
                         </h5>
                     </a>
