@@ -1,5 +1,4 @@
 import styles from './index.module.css'
-import type {GetStaticProps, GetStaticPropsResult, InferGetStaticPropsType, NextPage} from "next"
 import {MainLayout} from "../components/Layout"
 import {Card} from "../components/Card";
 import clsx from "clsx";
@@ -7,36 +6,6 @@ import React, {ReactNode, useEffect, useState} from "react";
 import {ProductResponse} from "../models/response/ProductResponse";
 import {CategoriesResponse} from "../models/response/CategoriesResponse";
 import {useRouter} from "next/router";
-
-export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ROOT}/category/all`,
-        {
-            headers: {
-                Authorization: `${process.env.ACCESS_TOKEN}`
-            }
-        }
-    )
-
-    if (!res.ok) {
-        throw new Error('Failed to fetch data: ' + res.status);
-    }
-
-
-
-    const categoriesResponse: CategoriesResponse = await res.json()
-    const categories = categoriesResponse.categories
-
-    return {
-        props: {
-            categories
-        },
-    }
-}
-
-interface HomeProps {
-    categories: Map<string, ProductResponse[]>
-}
 
 // @ts-ignore
 const Home: React.FC = () => {
@@ -50,12 +19,6 @@ const Home: React.FC = () => {
     function addToFavorite() {
 
     }
-
-    useEffect(() => {
-            router.prefetch('/product/id')
-        },
-        [router]
-    )
 
     const [categories, setCategories] = useState<Map<string, ProductResponse[]> | null>(null);
 
