@@ -39,7 +39,7 @@ interface HomeProps {
 }
 
 // @ts-ignore
-const Home: React.FC<HomeProps> = (props: HomeProps) => {
+const Home: React.FC = () => {
 
     const router = useRouter()
 
@@ -57,15 +57,32 @@ const Home: React.FC<HomeProps> = (props: HomeProps) => {
         [router]
     )
 
-    if (props.categories === undefined) {
-        return
+    const [categories, setCategories] = useState<Map<string, ProductResponse[]> | null>(null);
+
+    useEffect(() => {
+        async function fetchCategories() {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_ROOT}/category/all`,
+            )
+
+            const categoriesResponse: CategoriesResponse = await response.json()
+            setCategories(categoriesResponse.categories)
+        }
+
+        fetchCategories();
+    }, [])
+
+    if (!categories) {
+        return (<MainLayout>
+            <h1 className="text-3xl mb-4 pt-16 font-bold">Loading...</h1>
+        </MainLayout>)
     }
 
     return (
         <MainLayout>
             {Array.from(
                 new Map<string, ProductResponse[]>(
-                    Object.entries(props!!.categories)
+                    Object.entries(categories)
                 ).entries()
             ).map((v) => (
                 <div key={"title" + v[0]}>
