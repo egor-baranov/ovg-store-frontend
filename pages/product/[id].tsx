@@ -1,10 +1,3 @@
-import type {
-    GetServerSideProps,
-    GetServerSidePropsResult,
-    GetStaticPaths,
-    InferGetServerSidePropsType,
-    NextPage
-} from "next"
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {MainLayout} from "../../components/Layout";
 import {Favorite, FavoriteBorder, FavoriteOutlined, ShoppingBagOutlined} from "@mui/icons-material";
@@ -15,6 +8,7 @@ import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema} from "../../models/ProductSchema";
 import {GetStaticPropsResult} from "next";
 import {ProductResponse} from "../../models/response/ProductResponse";
+import { useScrollContainer } from 'react-indiana-drag-scroll';
 import useSWR, { Fetcher } from 'swr';
 
 const SizeButton: React.FC<{ text: string, onClick: Function, selected: boolean }> = ({text, onClick, selected}) => {
@@ -179,11 +173,11 @@ function Page() {
         async function fetchProduct() {
             const { id } = router.query
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_ROOT}/product/` + id);
-            setProduct(await response.json())
+            setProduct(await response.json());
         }
 
         fetchProduct();
-    }, [])
+    }, []);
 
     return (
         <MainLayout>

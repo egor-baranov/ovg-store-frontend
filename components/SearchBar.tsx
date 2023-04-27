@@ -5,6 +5,10 @@ import Image from "next/image"
 import React, {ReactNode} from "react"
 
 export const SearchBar: React.FC = () => {
+    function inputHandler() {
+
+    }
+
     return (
 
         <form>
@@ -19,6 +23,7 @@ export const SearchBar: React.FC = () => {
                     </svg>
                 </div>
                 <input type="search" id="default-search"
+                       onChange={inputHandler}
                        className="block w-full p-4 pl-10 text-sm text-gray-900 rounded-lg bg-gray-50 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500"
                        placeholder="Искать" required></input>
             </div>

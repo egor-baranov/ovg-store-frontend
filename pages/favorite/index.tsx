@@ -1,12 +1,14 @@
 import styles from './index.module.css'
 import type {NextPage} from "next"
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MainLayout} from "../../components/Layout";
 import {Card} from "../../components/Card";
 import clsx from "clsx";
 import {useRouter} from "next/router";
 // @ts-ignore
 import {ProductResponse} from "../../models/response/ProductResponse";
+import {FavoriteModel, FavoriteModelSchema} from "../../models/Favorite";
+import {CartModelSchema} from "../../models/Cart";
 
 
 const EmptyFavorite: React.FC<{ action: Function }> = ({action}) => {
@@ -25,16 +27,17 @@ const EmptyFavorite: React.FC<{ action: Function }> = ({action}) => {
     )
 }
 
-const Favorite: React.FC<{ count: number, updateFavorite: Function }> = ({count, updateFavorite}) => {
+const Favorite: React.FC<{ products: ProductResponse[], updateFavorite: Function }> = ({products, updateFavorite}) => {
     return (
         <div className={clsx("grid gap-4", styles.grid)}>
             {
-                Array.from({length: count}).map((v) => (
+                products.map((product) => (
                     <Card key="${v}"
-                          product={{id: "", label: "", description: "", price: "", sizes: [], colors: [], images: []}}
+                          product={product}
                           selectedByDefault={true}
                           onUpdate={updateFavorite}
-                          onPress={() => {}}
+                          onPress={() => {
+                          }}
                     />
                 ))
             }
@@ -45,30 +48,51 @@ const Favorite: React.FC<{ count: number, updateFavorite: Function }> = ({count,
 
 const Home: NextPage = () => {
 
-    const router = useRouter()
+    function favorite(): FavoriteModel {
+        const emptyFavorite = JSON.stringify({items: []})
 
-    const [count, setCount] = useState<number>(favoriteCount())
-
-    function favoriteCount() {
         if (typeof window == 'undefined') {
-            return 0
+            return FavoriteModelSchema.parse(JSON.parse(emptyFavorite))
         }
 
-        const favoriteCount: number = Number(window.localStorage.getItem("favorite-count"))
-        return favoriteCount
+        return FavoriteModelSchema.parse(JSON.parse(window.localStorage.getItem("favorite") ?? emptyFavorite))
     }
 
-    function updateFavorite(newCount: number) {
-        setCount(newCount)
+    function updateFavorite(newValue: FavoriteModel) {
+        window.localStorage.setItem("favorite", JSON.stringify(newValue))
+    }
+
+    const router = useRouter()
+
+    const [products, setProducts] = useState<ProductResponse[] | null>(null);
+
+    useEffect(() => {
+        async function fetchProducts() {
+            // post call
+            const ids: FavoriteModel = favorite()
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ROOT}/product/` + ids.items[0]);
+
+            const product = await response.json()
+            setProducts(Array.from({length: ids.items.length}).map((v) => product));
+        }
+
+        fetchProducts();
+    }, []);
+
+    if (products == null) {
+        return (<MainLayout>
+            <h1 className="text-3xl mb-4 pt-8 font-bold">Избранное</h1>
+        </MainLayout>)
     }
 
     return (
         <MainLayout>
             <h1 className="text-3xl mb-4 pt-8 font-bold">Избранное</h1>
 
-
-            {favoriteCount() > 0 ? <Favorite count={count} updateFavorite={updateFavorite}/> :
-                <EmptyFavorite action={() => router.push("/")}/>
+            {
+                products!!.length > 0 ?
+                    <Favorite products={products} updateFavorite={updateFavorite}/> :
+                    <EmptyFavorite action={() => router.push("/")}/>
             }
         </MainLayout>
     )

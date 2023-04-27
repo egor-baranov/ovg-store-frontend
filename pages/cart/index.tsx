@@ -5,13 +5,7 @@ import {RowCard} from "../../components/RowCard";
 import {useRouter} from "next/router";
 import {CartModel, CartModelSchema} from "../../models/Cart";
 import {Model, ModelSchema} from "../../models/ProductSchema";
-import {set, z} from "zod"
 import {YMaps, Map} from "@pbe/react-yandex-maps";
-
-function onYaPayLoad() {
-
-}
-
 
 const EmptyCart: React.FC<{ action: Function }> = ({action}) => {
     return (

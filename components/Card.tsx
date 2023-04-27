@@ -3,6 +3,7 @@ import React, {useState} from "react"
 import colors from "tailwindcss/colors"
 import {useRouter} from "next/router";
 import {ProductResponse} from "../models/response/ProductResponse";
+import {FavoriteModelSchema} from "../models/Favorite";
 
 
 export const Card: React.FC<{ product: ProductResponse, selectedByDefault: boolean, onUpdate: Function, onPress: Function }> =
@@ -19,18 +20,39 @@ export const Card: React.FC<{ product: ProductResponse, selectedByDefault: boole
             setColor(colors.gray[100])
         }
 
-        function addToFavorite() {
-            setFavorite(!favorite)
+        function addToFavorite(id: string) {
+            setFavorite(true)
+            const emptyFavorite = JSON.stringify({items: []})
 
             if (typeof window == 'undefined') {
                 return
             }
 
-            const favoriteCount: number = Number(window.localStorage.getItem("favorite-count"))
-            const newCount = !favorite ? favoriteCount + 1 : favoriteCount - 1
+            const rawState = window.localStorage.getItem("favorite")
 
-            window.localStorage.setItem("favorite-count", String(newCount))
-            onUpdate(newCount)
+            const favoriteState = FavoriteModelSchema.parse(
+                JSON.parse(rawState != null ? rawState : emptyFavorite)
+            )
+            favoriteState.items.push(id)
+
+            window.localStorage.setItem("favorite", JSON.stringify(favoriteState))
+            onUpdate(favoriteState)
+        }
+
+        function removeFromFavorite(id: string) {
+            setFavorite(true)
+
+            if (typeof window == 'undefined') {
+                return
+            }
+
+            const rawState = window.localStorage.getItem("favorite")
+
+            const favoriteState = FavoriteModelSchema.parse(JSON.parse(rawState!!))
+            favoriteState.items.push(id)
+
+            window.localStorage.setItem("favorite", JSON.stringify(favoriteState))
+            onUpdate(favoriteState)
         }
 
         return (
@@ -40,8 +62,9 @@ export const Card: React.FC<{ product: ProductResponse, selectedByDefault: boole
                 onMouseLeave={onMouseLeave}
             >
                 <a href="#">
-                    <img className="rounded-t-lg" src="https://storage.yandexcloud.net/ovg-store/img-2.png" width='300px' height='300px'
-                           onMouseDown={() => onPress()}/>
+                    <img className="rounded-t-lg" src="https://storage.yandexcloud.net/ovg-store/img-2.png"
+                         width='300px' height='300px'
+                         onMouseDown={() => onPress()}/>
                 </a>
                 <div className="px-4" onMouseDown={() => onPress()}>
                     <p className="mb-3 text-bold text-gray-900 dark:text-gray-900 text-center">
@@ -56,8 +79,8 @@ export const Card: React.FC<{ product: ProductResponse, selectedByDefault: boole
 
                 <a className="absolute top-2 right-2 leading-none text-black flex-shrink-0">
                     {favorite ?
-                        <Favorite fontSize="medium" onClick={addToFavorite}/> :
-                        <FavoriteBorder fontSize="medium" sx={{color: {color}}} onClick={addToFavorite}/>}
+                        <Favorite fontSize="medium" onClick={() => addToFavorite(product.id)}/> :
+                        <FavoriteBorder fontSize="medium" sx={{color: {color}}} onClick={() => addToFavorite(product.id)}/>}
                 </a>
             </div>
         )
